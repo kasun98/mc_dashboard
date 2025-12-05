@@ -1,10 +1,5 @@
 import styles from './Loading.module.css';
 
-console.log("--- DEBUG START ---");
-console.log("SQL Endpoint Env Var:", process.env.FABRIC_SQL_ENDPOINT);
-console.log("Lakehouse Name Env Var:", process.env.FABRIC_LAKEHOUSE_NAME);
-console.log("--- DEBUG END ---");
-
 export default function Loading() {
     return (
         <div className={styles.container}>
