@@ -1,0 +1,21 @@
+{
+    "name": "oil-price-dashboard",
+    "version": "0.1.0",
+    "private": true,
+    "scripts": {
+        "dev": "next dev",
+        "build": "next build",
+        "start": "next start",
+        "lint": "next lint"
+    },
+    "dependencies": {
+        "duckdb": "^1.4.2",
+        "duckdb-async": "^1.4.2",
+        "lucide-react": "^0.460.0",
+        "mssql": "^12.2.0",
+        "next": "^15.5.7",
+        "react": "19.0.0-rc-66855b96-20241106",
+        "react-dom": "19.0.0-rc-66855b96-20241106",
+        "recharts": "^2.13.3"
+    }
+}

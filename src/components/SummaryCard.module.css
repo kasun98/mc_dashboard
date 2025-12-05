@@ -1,0 +1,80 @@
+.card {
+    background-color: var(--surface);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+
+.iconWrapper {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.primary {
+    background-color: var(--primary);
+}
+
+.success {
+    background-color: var(--success);
+}
+
+.warning {
+    background-color: #f59e0b;
+}
+
+.info {
+    background-color: #3b82f6;
+}
+
+.danger {
+    background-color: var(--danger);
+}
+
+.change {
+    font-size: 0.875rem;
+    font-weight: 600;
+    padding: 0.25rem 0.5rem;
+    border-radius: 1rem;
+}
+
+.up {
+    color: var(--success);
+    background-color: #d1fae5;
+}
+
+.down {
+    color: var(--danger);
+    background-color: #fee2e2;
+}
+
+.title {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+
+.value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
