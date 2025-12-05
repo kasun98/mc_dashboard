@@ -4,8 +4,8 @@ import sql from 'mssql';
 export async function GET() {
 
     const sqlConfig = {
-        server: "q6efojowbh4urm2j2u7mievzji-mrboruazrycehkg6qiillvwozm.datawarehouse.fabric.microsoft.com",
-        database: "lakehouse",
+        server: process.env.FABRIC_SQL_ENDPOINT,
+        database: process.env.FABRIC_LAKEHOUSE_NAME,
         authentication: {
             type: 'azure-active-directory-default'
         },
