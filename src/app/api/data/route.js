@@ -2,12 +2,6 @@ import { NextResponse } from 'next/server';
 import sql from 'mssql';
 
 export async function GET() {
-    // --- DEBUGGING LOGS ---
-    // Check Azure Log Stream to see these values
-    console.log("--- DEBUG START ---");
-    console.log("SQL Endpoint Env Var:", process.env.FABRIC_SQL_ENDPOINT);
-    console.log("Lakehouse Name Env Var:", process.env.FABRIC_LAKEHOUSE_NAME);
-    console.log("--- DEBUG END ---");
 
     const sqlConfig = {
         server: process.env.FABRIC_SQL_ENDPOINT,
