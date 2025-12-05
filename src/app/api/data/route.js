@@ -4,15 +4,15 @@ import sql from 'mssql';
 export async function GET() {
 
     const sqlConfig = {
-        server: process.env.FABRIC_SQL_ENDPOINT,
-        database: process.env.FABRIC_LAKEHOUSE_NAME,
+        server: "q6efojowbh4urm2j2u7mievzji-mrboruazrycehkg6qiillvwozm.datawarehouse.fabric.microsoft.com",
+        database: "lakehouse",
         authentication: {
             type: 'azure-active-directory-default'
         },
         options: {
             encrypt: true,
-            trustServerCertificate: true, // Crucial for Azure internal networks
-            connectTimeout: 30000,        // 30 seconds timeout
+            trustServerCertificate: true,
+            connectTimeout: 60000,
         }
     };
 
