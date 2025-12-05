@@ -1,28 +1,33 @@
 import { NextResponse } from 'next/server';
 import sql from 'mssql';
 
-// Configuration for Managed Identity (No passwords!)
-const sqlConfig = {
-    server: process.env.FABRIC_SQL_ENDPOINT, // e.g., x123.datawarehouse.fabric.microsoft.com
-    database: process.env.FABRIC_LAKEHOUSE_NAME,
-    authentication: {
-        type: 'azure-active-directory-default' // Auto-detects Managed Identity in Azure
-    },
-    options: {
-        encrypt: true,
-        trustServerCertificate: true,
-        connectTimeout: 30000,
-    }
-};
-
 export async function GET() {
+    // --- DEBUGGING LOGS ---
+    // Check Azure Log Stream to see these values
+    console.log("--- DEBUG START ---");
+    console.log("SQL Endpoint Env Var:", process.env.FABRIC_SQL_ENDPOINT);
+    console.log("Lakehouse Name Env Var:", process.env.FABRIC_LAKEHOUSE_NAME);
+    console.log("--- DEBUG END ---");
+
+    const sqlConfig = {
+        server: process.env.FABRIC_SQL_ENDPOINT,
+        database: process.env.FABRIC_LAKEHOUSE_NAME,
+        authentication: {
+            type: 'azure-active-directory-default'
+        },
+        options: {
+            encrypt: true,
+            trustServerCertificate: true, // Crucial for Azure internal networks
+            connectTimeout: 30000,        // 30 seconds timeout
+        }
+    };
+
     try {
         const pool = await sql.connect(sqlConfig);
 
         // --- 1. DEFINE QUERIES ---
         
         // Query A: The "Merge" Logic (Chart Data + Historical Summary)
-        // We use FULL OUTER JOIN in SQL to replicate Pandas merge
         const chartQuery = `
             WITH DateRange AS (
                 SELECT DISTINCT CAST(Timestamp as DATE) as date FROM AMFSA_HISTORICAL_PRICE_TABLE
@@ -68,7 +73,7 @@ export async function GET() {
             WHERE CAST(date as DATE) = (SELECT MAX(CAST(date as DATE)) FROM OIL_NEWS_TABLE)
         `;
 
-        // --- 2. PARALLEL EXECUTION (Replaces ThreadPoolExecutor) ---
+        // --- 2. PARALLEL EXECUTION ---
         const [chartResult, sentimentResult, analysisResult, newsResult] = await Promise.all([
             pool.request().query(chartQuery),
             pool.request().query(sentimentQuery),
@@ -78,11 +83,10 @@ export async function GET() {
 
         const chartData = chartResult.recordset;
 
-        // --- 3. SUMMARY CALCULATIONS (Replaces Python Logic) ---
+        // --- 3. SUMMARY CALCULATIONS ---
         const summary = {};
 
         // A. Price Calculation
-        // Filter for rows that actually have a price
         const historyRows = chartData.filter(r => r.price != null);
         
         if (historyRows.length > 0) {
@@ -102,7 +106,6 @@ export async function GET() {
         }
 
         // B. Forecast Calculation
-        // Find the very last row in the chart data (furthest future date)
         const lastRow = chartData[chartData.length - 1];
         let forecasts = [];
         if (lastRow.v1) forecasts.push(lastRow.v1);
