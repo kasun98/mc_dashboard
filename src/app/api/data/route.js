@@ -2,6 +2,25 @@ import { NextResponse } from 'next/server';
 import sql from 'mssql';
 
 export async function GET() {
+    // --- DEBUG LOGS (Check Azure Log Stream) ---
+    console.log("--- DEBUG START ---");
+    console.log("Connecting to:", process.env.FABRIC_SQL_ENDPOINT);
+    console.log("Lakehouse:", process.env.FABRIC_LAKEHOUSE_NAME);
+
+    // 1. Get Table Names from Environment Variables
+    const T_HIST = process.env.AMFSA_HISTORICAL_PRICE_TABLE;
+    const T_V1 = process.env.ML_PREDICTION_V1_TABLE;
+    const T_V2 = process.env.ML_PREDICTION_V2_TABLE;
+    const T_V3 = process.env.ML_PREDICTION_V3_TABLE;
+    const T_SENTIMENT = process.env.OIL_MARKET_SENTIMENT_TABLE;
+    const T_ANALYSIS = process.env.TRADING_FINAL_DIRECTION_TABLE;
+    const T_NEWS = process.env.OIL_NEWS_TABLE;
+
+    // Verify critical variables exist to prevent SQL errors
+    if (!T_HIST || !T_V1) {
+        console.error("Missing Table Environment Variables!");
+        return NextResponse.json({ error: "Server Configuration Error: Missing table names." }, { status: 500 });
+    }
 
     const sqlConfig = {
         server: process.env.FABRIC_SQL_ENDPOINT,
@@ -11,7 +30,7 @@ export async function GET() {
         },
         options: {
             encrypt: true,
-            trustServerCertificate: true,
+            trustServerCertificate: true, // Required for Azure Fabric
             connectTimeout: 60000,
         }
     };
@@ -19,18 +38,19 @@ export async function GET() {
     try {
         const pool = await sql.connect(sqlConfig);
 
-        // --- 1. DEFINE QUERIES ---
+        // --- 2. DEFINE QUERIES (Using Env Vars) ---
         
-        // Query A: The "Merge" Logic (Chart Data + Historical Summary)
+        // Query A: The "Merge" Logic
+        // We inject the table names using ${variable} syntax
         const chartQuery = `
             WITH DateRange AS (
-                SELECT DISTINCT CAST(Timestamp as DATE) as date FROM AMFSA_HISTORICAL_PRICE_TABLE
+                SELECT DISTINCT CAST(Timestamp as DATE) as date FROM ${T_HIST}
                 UNION
-                SELECT DISTINCT CAST(target_date as DATE) FROM ML_PREDICTION_V1_TABLE
+                SELECT DISTINCT CAST(target_date as DATE) FROM ${T_V1}
                 UNION
-                SELECT DISTINCT CAST(target_date as DATE) FROM ML_PREDICTION_V2_TABLE
+                SELECT DISTINCT CAST(target_date as DATE) FROM ${T_V2}
                 UNION
-                SELECT DISTINCT CAST(target_date as DATE) FROM ML_PREDICTION_V3_TABLE
+                SELECT DISTINCT CAST(target_date as DATE) FROM ${T_V3}
             )
             SELECT 
                 FORMAT(d.date, 'yyyy-MM-dd') as date,
@@ -39,35 +59,35 @@ export async function GET() {
                 v2.predicted_price as v2,
                 v3.predicted_price as v3
             FROM DateRange d
-            LEFT JOIN AMFSA_HISTORICAL_PRICE_TABLE h ON CAST(h.Timestamp as DATE) = d.date
-            LEFT JOIN ML_PREDICTION_V1_TABLE v1 ON CAST(v1.target_date as DATE) = d.date
-            LEFT JOIN ML_PREDICTION_V2_TABLE v2 ON CAST(v2.target_date as DATE) = d.date
-            LEFT JOIN ML_PREDICTION_V3_TABLE v3 ON CAST(v3.target_date as DATE) = d.date
+            LEFT JOIN ${T_HIST} h ON CAST(h.Timestamp as DATE) = d.date
+            LEFT JOIN ${T_V1} v1 ON CAST(v1.target_date as DATE) = d.date
+            LEFT JOIN ${T_V2} v2 ON CAST(v2.target_date as DATE) = d.date
+            LEFT JOIN ${T_V3} v3 ON CAST(v3.target_date as DATE) = d.date
             ORDER BY d.date ASC
         `;
 
         // Query B: Latest Sentiment
         const sentimentQuery = `
             SELECT TOP 1 market_sentiment, confidence 
-            FROM OIL_MARKET_SENTIMENT_TABLE 
+            FROM ${T_SENTIMENT} 
             ORDER BY date DESC
         `;
 
         // Query C: Latest Analysis
         const analysisQuery = `
             SELECT TOP 1 fundamental_analyst, technical_analyst
-            FROM TRADING_FINAL_DIRECTION_TABLE
+            FROM ${T_ANALYSIS} 
             ORDER BY date DESC
         `;
 
         // Query D: Latest News (Same day only)
         const newsQuery = `
             SELECT TOP 5 FORMAT(date, 'yyyy-MM-dd') as date, title
-            FROM OIL_NEWS_TABLE
-            WHERE CAST(date as DATE) = (SELECT MAX(CAST(date as DATE)) FROM OIL_NEWS_TABLE)
+            FROM ${T_NEWS} 
+            WHERE CAST(date as DATE) = (SELECT MAX(CAST(date as DATE)) FROM ${T_NEWS})
         `;
 
-        // --- 2. PARALLEL EXECUTION ---
+        // --- 3. PARALLEL EXECUTION ---
         const [chartResult, sentimentResult, analysisResult, newsResult] = await Promise.all([
             pool.request().query(chartQuery),
             pool.request().query(sentimentQuery),
@@ -77,7 +97,7 @@ export async function GET() {
 
         const chartData = chartResult.recordset;
 
-        // --- 3. SUMMARY CALCULATIONS ---
+        // --- 4. SUMMARY CALCULATIONS ---
         const summary = {};
 
         // A. Price Calculation
@@ -129,7 +149,7 @@ export async function GET() {
         summary.fundamental_analysis = anal.fundamental_analyst || "No data";
         summary.technical_analysis = anal.technical_analyst || "No data";
 
-        // --- 4. FINAL RESPONSE ---
+        // --- 5. FINAL RESPONSE ---
         return NextResponse.json({
             chart_data: chartData,
             summary: summary,
