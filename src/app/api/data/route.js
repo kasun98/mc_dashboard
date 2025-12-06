@@ -2,12 +2,10 @@ import { NextResponse } from 'next/server';
 import sql from 'mssql';
 
 export async function GET() {
-    // --- DEBUG LOGS (Check Azure Log Stream) ---
     console.log("--- DEBUG START ---");
-    console.log("Connecting to:", process.env.FABRIC_SQL_ENDPOINT);
-    console.log("Lakehouse:", process.env.FABRIC_LAKEHOUSE_NAME);
+    console.log("Connecting to Tenant:", process.env.AZURE_TENANT_ID);
 
-    // 1. Get Table Names from Environment Variables
+    // 1. Get Table Names
     const T_HIST = process.env.AMFSA_HISTORICAL_PRICE_TABLE;
     const T_V1 = process.env.ML_PREDICTION_V1_TABLE;
     const T_V2 = process.env.ML_PREDICTION_V2_TABLE;
@@ -16,21 +14,26 @@ export async function GET() {
     const T_ANALYSIS = process.env.TRADING_FINAL_DIRECTION_TABLE;
     const T_NEWS = process.env.OIL_NEWS_TABLE;
 
-    // Verify critical variables exist to prevent SQL errors
-    if (!T_HIST || !T_V1) {
-        console.error("Missing Table Environment Variables!");
-        return NextResponse.json({ error: "Server Configuration Error: Missing table names." }, { status: 500 });
+    // Safety Check
+    if (!T_HIST) {
+        return NextResponse.json({ error: "Configuration Error: Missing Table Names" }, { status: 500 });
     }
 
     const sqlConfig = {
         server: process.env.FABRIC_SQL_ENDPOINT,
         database: process.env.FABRIC_LAKEHOUSE_NAME,
         authentication: {
-            type: 'azure-active-directory-default'
+            // SWITCH TO SERVICE PRINCIPAL AUTH
+            type: 'azure-active-directory-service-principal-secret',
+            options: {
+                userName: process.env.AZURE_CLIENT_ID,     // The App ID
+                password: process.env.AZURE_CLIENT_SECRET, // The Secret Value
+                tenantId: process.env.AZURE_TENANT_ID      // The Fabric Tenant ID
+            }
         },
         options: {
             encrypt: true,
-            trustServerCertificate: true, // Required for Azure Fabric
+            trustServerCertificate: true,
             connectTimeout: 60000,
         }
     };
