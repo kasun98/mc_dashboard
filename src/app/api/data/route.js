@@ -26,8 +26,8 @@ export async function GET() {
             // SWITCH TO SERVICE PRINCIPAL AUTH
             type: 'azure-active-directory-service-principal-secret',
             options: {
-                userName: process.env.AZURE_CLIENT_ID,     // The App ID
-                password: process.env.AZURE_CLIENT_SECRET, // The Secret Value
+                clientId: process.env.AZURE_CLIENT_ID,
+                clientSecret: process.env.AZURE_CLIENT_SECRET,
                 tenantId: process.env.AZURE_TENANT_ID      // The Fabric Tenant ID
             }
         },
