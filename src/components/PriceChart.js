@@ -136,26 +136,26 @@ export default function PriceChart({ data: rawData, loading, error }) {
                     >
                         <defs>
                             <linearGradient id="colorPrice" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.3} />
+                                <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.4} />
                                 <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
                             </linearGradient>
                             <linearGradient id="colorV1" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />
-                                <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
+                                <stop offset="5%" stopColor="#0ea5e9" stopOpacity={0.4} />
+                                <stop offset="95%" stopColor="#0ea5e9" stopOpacity={0} />
                             </linearGradient>
                             <linearGradient id="colorV2" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />
+                                <stop offset="5%" stopColor="#10b981" stopOpacity={0.4} />
                                 <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
                             </linearGradient>
                             <linearGradient id="colorV3" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.3} />
+                                <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.4} />
                                 <stop offset="95%" stopColor="#f59e0b" stopOpacity={0} />
                             </linearGradient>
                         </defs>
-                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#334155" />
+                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
                         <XAxis
                             dataKey="date"
-                            stroke="#94a3b8"
+                            stroke="#64748b"
                             fontSize={12}
                             tickLine={false}
                             axisLine={false}
@@ -165,14 +165,14 @@ export default function PriceChart({ data: rawData, loading, error }) {
                             }}
                         />
                         <YAxis
-                            stroke="#94a3b8"
+                            stroke="#64748b"
                             fontSize={12}
                             tickLine={false}
                             axisLine={false}
                             domain={['auto', 'auto']}
                             tickFormatter={(value) => `$${value}`}
                         />
-                        <Tooltip content={<CustomTooltip />} />
+                        <Tooltip content={<CustomTooltip />} cursor={{ stroke: 'rgba(255,255,255,0.2)', strokeWidth: 1, strokeDasharray: '4 4' }} />
                         <Legend />
                         <Area
                             type="monotone"
@@ -181,17 +181,18 @@ export default function PriceChart({ data: rawData, loading, error }) {
                             stroke="#8b5cf6"
                             fillOpacity={1}
                             fill="url(#colorPrice)"
-                            strokeWidth={2}
+                            strokeWidth={3}
                             connectNulls
+                            activeDot={{ r: 6, strokeWidth: 0, fill: '#fff' }}
                         />
                         <Area
                             type="monotone"
                             dataKey="v1"
                             name="Forecast V1"
-                            stroke="#3b82f6"
+                            stroke="#0ea5e9"
                             fillOpacity={1}
                             fill="url(#colorV1)"
-                            strokeWidth={2}
+                            strokeWidth={3}
                             strokeDasharray="5 5"
                             connectNulls
                         />
@@ -202,7 +203,7 @@ export default function PriceChart({ data: rawData, loading, error }) {
                             stroke="#10b981"
                             fillOpacity={1}
                             fill="url(#colorV2)"
-                            strokeWidth={2}
+                            strokeWidth={3}
                             strokeDasharray="5 5"
                             connectNulls
                         />
@@ -213,7 +214,7 @@ export default function PriceChart({ data: rawData, loading, error }) {
                             stroke="#f59e0b"
                             fillOpacity={1}
                             fill="url(#colorV3)"
-                            strokeWidth={2}
+                            strokeWidth={3}
                             strokeDasharray="5 5"
                             connectNulls
                         />

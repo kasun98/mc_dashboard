@@ -6,6 +6,7 @@ import Sidebar from './Sidebar';
 import SummaryCard from './SummaryCard';
 import PriceChart from './PriceChart';
 import NewsCard from './NewsCard';
+import AnalysisCard from './AnalysisCard';
 import { TrendingUp, TrendingDown, DollarSign, Activity } from 'lucide-react';
 import Loading from './Loading';
 import styles from './Dashboard.module.css';
@@ -32,6 +33,25 @@ export default function Dashboard() {
     const toggleSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen);
     };
+
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth < 768) {
+                setIsSidebarOpen(false);
+            }
+            // Don't auto-open on desktop to respect user preference if they closed it
+            // ensuring initial load on desktop is open is handled by default state (true) 
+            // but we might want to check initial load specifically.
+        };
+
+        // Check initial load
+        if (window.innerWidth < 768) {
+            setIsSidebarOpen(false);
+        }
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -98,7 +118,7 @@ export default function Dashboard() {
         <div className={styles.container}>
             <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} activeTab={activeTab} onTabChange={setActiveTab} />
             <div className={`${styles.mainContent} ${!isSidebarOpen ? styles.mainContentCollapsed : ''}`}>
-                <Header />
+                <Header toggleSidebar={toggleSidebar} />
                 <main className={styles.content}>
                     <div className={styles.pageHeader}>
                         <h1 className={styles.title}>AMFSA Price Forecast</h1>
@@ -135,7 +155,7 @@ export default function Dashboard() {
                                     title="Sentiment"
                                     value={loading ? '...' : summary.sentiment}
                                     change={loading ? '...' : (summary.sentiment_confidence > 0.5 ? 'Strong' : 'Neutral')}
-                                    trend="neutral"
+                                    trend={summary.sentiment?.toLowerCase().includes('bullish') ? 'up' : 'down'}
                                     icon={sentimentUI.icon}
                                     color={sentimentUI.color}
                                 />
@@ -155,22 +175,16 @@ export default function Dashboard() {
 
                     {activeTab === 'Analytics' && (
                         <div className={styles.bottomSection}>
-                            <div className={styles.card} style={{ flex: 1, minWidth: '300px', borderLeft: '4px solid var(--primary)' }}>
-                                <div className={styles.header}>
-                                    <h2 className={styles.sectionTitle} style={{ color: 'var(--primary)' }}>Fundamental Analysis</h2>
-                                </div>
-                                <p style={{ lineHeight: '1.6', color: 'var(--text-secondary)' }}>
-                                    {loading ? 'Loading analysis...' : summary.fundamental_analysis || 'No analysis available.'}
-                                </p>
-                            </div>
-                            <div className={styles.card} style={{ flex: 1, minWidth: '300px', borderLeft: '4px solid var(--success)' }}>
-                                <div className={styles.header}>
-                                    <h2 className={styles.sectionTitle} style={{ color: 'var(--success)' }}>Technical Analysis</h2>
-                                </div>
-                                <p style={{ lineHeight: '1.6', color: 'var(--text-secondary)' }}>
-                                    {loading ? 'Loading analysis...' : summary.technical_analysis || 'No analysis available.'}
-                                </p>
-                            </div>
+                            <AnalysisCard
+                                title="Fundamental Analysis"
+                                content={loading ? 'Loading analysis...' : summary.fundamental_analysis || 'No analysis available.'}
+                                variant="primary"
+                            />
+                            <AnalysisCard
+                                title="Technical Analysis"
+                                content={loading ? 'Loading analysis...' : summary.technical_analysis || 'No analysis available.'}
+                                variant="success"
+                            />
                         </div>
                     )}
                 </main>

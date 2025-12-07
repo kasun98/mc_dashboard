@@ -1,0 +1,87 @@
+.card {
+    background: var(--surface-glass);
+    backdrop-filter: blur(12px);
+    border-radius: 1.5rem;
+    padding: 2rem;
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    flex: 1;
+    min-width: 300px;
+    display: flex;
+    flex-direction: column;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px -5px rgba(0, 0, 0, 0.4);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.spotlight {
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.3s;
+    background: radial-gradient(800px circle at var(--mouse-x) var(--mouse-y),
+            var(--spotlight-color),
+            transparent 40%);
+    z-index: 0;
+}
+
+.card:hover .spotlight {
+    opacity: 1;
+}
+
+/* Variants */
+.primary {
+    border-left: 4px solid var(--primary);
+    --spotlight-color: rgba(79, 70, 229, 0.15);
+    /* Indigo/Purple glow */
+}
+
+.success {
+    border-left: 4px solid var(--success);
+    --spotlight-color: rgba(16, 185, 129, 0.15);
+    /* Green glow */
+}
+
+.primary:hover {
+    border-color: rgba(79, 70, 229, 0.3);
+    border-left-color: var(--primary);
+}
+
+.success:hover {
+    border-color: rgba(16, 185, 129, 0.3);
+    border-left-color: var(--success);
+}
+
+.header {
+    margin-bottom: 1rem;
+    position: relative;
+    z-index: 1;
+}
+
+.title {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.primary .title {
+    color: var(--primary);
+}
+
+.success .title {
+    color: var(--success);
+}
+
+.content {
+    line-height: 1.7;
+    color: var(--text-secondary);
+    font-size: 1.05rem;
+    position: relative;
+    z-index: 1;
+}

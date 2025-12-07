@@ -6,18 +6,13 @@ import styles from './NewsCard.module.css';
 
 export default function NewsCard({ news = [] }) {
     const [currentIndex, setCurrentIndex] = useState(0);
-    const [animating, setAnimating] = useState(true);
 
     useEffect(() => {
         if (!news || news.length === 0) return;
 
         const interval = setInterval(() => {
-            setAnimating(false);
-            setTimeout(() => {
-                setCurrentIndex((prevIndex) => (prevIndex + 1) % news.length);
-                setAnimating(true);
-            }, 50); // Small delay to reset animation
-        }, 5000); // 5 seconds
+            setCurrentIndex((prevIndex) => (prevIndex + 1) % news.length);
+        }, 5000);
 
         return () => clearInterval(interval);
     }, [news]);
@@ -44,12 +39,10 @@ export default function NewsCard({ news = [] }) {
                 <h2 className={styles.title}>Latest News</h2>
             </div>
             <div className={styles.newsContainer}>
-                {animating && (
-                    <div className={styles.newsItem}>
-                        {currentNews.title}
-                        <div className={styles.date}>{currentNews.date}</div>
-                    </div>
-                )}
+                <div key={currentIndex} className={styles.newsItem}>
+                    {currentNews.title}
+                    <div className={styles.date}>{currentNews.date}</div>
+                </div>
             </div>
         </div>
     );
