@@ -6,18 +6,13 @@ export async function GET() {
 
     // 1. Setup Timeout (Deadline)
     const controller = new AbortController();
-    // We increase this to 80s just to be safe for Azure Cold Starts
-    const timeoutId = setTimeout(() => controller.abort(), 80000); 
+    const timeoutId = setTimeout(() => controller.abort(), 180000); 
 
     try {
         console.log(`Attempting to fetch from backend...`);
         const startTime = Date.now();
 
         // 2. FETCH (Clean URL)
-        // REMOVED `&t=${Date.now()}`. 
-        // Why? Because you want Next.js to CACHE this result for 30 mins.
-        // If you send a unique timestamp, Next.js thinks it's a new request and 
-        // will incorrectly fetch from Python every single time.
         const response = await fetch(BACKEND_URL, {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' },
