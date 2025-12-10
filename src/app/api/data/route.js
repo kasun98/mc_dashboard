@@ -6,7 +6,7 @@ export async function GET() {
 
     // 1. Setup Timeout (Deadline)
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 180000); 
+    const timeoutId = setTimeout(() => controller.abort(), 360000); 
 
     try {
         console.log(`Attempting to fetch from backend...`);
@@ -17,7 +17,7 @@ export async function GET() {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' },
             signal: controller.signal, 
-            next: { revalidate: 1800 } // Cache for 30 minutes
+            next: { revalidate: 3600 } // Cache for 60 minutes
         });
 
         const duration = Date.now() - startTime;
