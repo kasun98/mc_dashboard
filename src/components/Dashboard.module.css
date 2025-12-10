@@ -1,7 +1,7 @@
 .container {
     display: flex;
     min-height: 100vh;
-    background-color: var(--background);
+    /* background-color: var(--background); Removed to show canvas effect */
     color: var(--text-primary);
 }
 
