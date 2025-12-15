@@ -180,7 +180,8 @@
 
 @media (max-width: 768px) {
     .content {
-        padding: 1.5rem;
+        padding: 1rem;
+        width: 100%;
     }
 
     .pageHeader {

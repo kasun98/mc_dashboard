@@ -85,7 +85,7 @@ export default function BackgroundEffect() {
                 height: '100%',
                 pointerEvents: 'none',
                 zIndex: 0,
-                filter: 'blur(60px)', // Extra CSS blur for extreme softness
+                filter: 'blur(50px)', // Extra CSS blur for extreme softness
             }}
         />
     );

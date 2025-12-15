@@ -7,6 +7,7 @@ import SummaryCard from './SummaryCard';
 import PriceChart from './PriceChart';
 import NewsCard from './NewsCard';
 import AnalysisCard from './AnalysisCard';
+import TickerTile from './TickerTile';
 import { TrendingUp, TrendingDown, DollarSign, Activity } from 'lucide-react';
 import Loading from './Loading';
 import styles from './Dashboard.module.css';
@@ -143,8 +144,8 @@ export default function Dashboard() {
                                     color={summary.price_change_pct >= 0 ? 'success' : 'danger'}
                                 />
                                 <SummaryCard
-                                    title="Forecast avg (10d)"
-                                    value={loading ? '...' : formatCurrency(summary.forecast_10d)}
+                                    title="Next Day Price Avg"
+                                    value={loading ? '...' : formatCurrency(summary.forecast_next_day)}
                                     change={loading ? '...' : formatPct(summary.forecast_change_pct)}
                                     trend={summary.forecast_change_pct >= 0 ? 'up' : 'down'}
                                     icon={TrendingUp}
@@ -174,18 +175,21 @@ export default function Dashboard() {
                     )}
 
                     {activeTab === 'Analytics' && (
-                        <div className={styles.bottomSection}>
-                            <AnalysisCard
-                                title="Fundamental Analysis"
-                                content={loading ? 'Loading analysis...' : summary.fundamental_analysis || 'No analysis available.'}
-                                variant="primary"
-                            />
-                            <AnalysisCard
-                                title="Technical Analysis"
-                                content={loading ? 'Loading analysis...' : summary.technical_analysis || 'No analysis available.'}
-                                variant="success"
-                            />
-                        </div>
+                        <>
+                            <TickerTile data={summary} loading={loading} />
+                            <div className={styles.bottomSection}>
+                                <AnalysisCard
+                                    title="Fundamental Analysis"
+                                    content={loading ? 'Loading analysis...' : summary.fundamental_analysis || 'No analysis available.'}
+                                    variant="primary"
+                                />
+                                <AnalysisCard
+                                    title="Technical Analysis"
+                                    content={loading ? 'Loading analysis...' : summary.technical_analysis || 'No analysis available.'}
+                                    variant="success"
+                                />
+                            </div>
+                        </>
                     )}
                 </main>
             </div>
