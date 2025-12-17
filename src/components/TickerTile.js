@@ -75,7 +75,7 @@ const TickerTile = ({ data, loading }) => {
     return (
         <div className={styles.wrapper}>
             <div className={styles.tickerHeader}>
-                <h3 className={styles.title}>Crude Oil WTI</h3>
+                <h3 className={styles.title}>Crude Oil WTI Daily Summary</h3>
             </div>
             <div className={styles.tickerContainer}>
                 {/* Price section already covered in main cards, but good for context */}
