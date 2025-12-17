@@ -1,0 +1,86 @@
+.wrapper {
+    background: var(--surface-glass);
+    backdrop-filter: blur(12px);
+    border-radius: 1.5rem;
+    padding: 1.25rem 1.5rem 1.5rem 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow);
+    /* border: var(--glass-border); Removed as per request */
+    height: 450px;
+    /* Fixed height for the chart */
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: var(--glass-border);
+}
+
+.title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.liveBadge {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #ef4444;
+    /* Red for live indicator */
+    background: rgba(239, 68, 68, 0.1);
+    padding: 0.25rem 0.6rem;
+    border-radius: 100px;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.liveDot {
+    width: 6px;
+    height: 6px;
+    background-color: #ef4444;
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(0.95);
+        opacity: 0.8;
+    }
+
+    50% {
+        transform: scale(1.2);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(0.95);
+        opacity: 0.8;
+    }
+}
+
+.widgetContainer {
+    flex: 1;
+    width: 100%;
+    position: relative;
+    min-height: 0;
+    /* Fix flex child overflow */
+}
+
+.widgetContainer iframe {
+    border: none !important;
+    background-color: transparent !important;
+}

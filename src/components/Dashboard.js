@@ -8,6 +8,7 @@ import PriceChart from './PriceChart';
 import NewsCard from './NewsCard';
 import AnalysisCard from './AnalysisCard';
 import TickerTile from './TickerTile';
+import TradingViewWidget from './TradingViewWidget';
 import { TrendingUp, TrendingDown, DollarSign, Activity } from 'lucide-react';
 import Loading from './Loading';
 import styles from './Dashboard.module.css';
@@ -176,6 +177,7 @@ export default function Dashboard() {
 
                     {activeTab === 'Analytics' && (
                         <>
+                            <TradingViewWidget />
                             <TickerTile data={summary} loading={loading} />
                             <div className={styles.bottomSection}>
                                 <AnalysisCard
