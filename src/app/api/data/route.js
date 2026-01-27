@@ -4,7 +4,7 @@ export async function GET() {
     console.log("--- DEBUG START: API PROXY ---");
     const BACKEND_URL = process.env.DATA_BACKEND_URL; 
 
-    // 1. Setup Timeout (Deadline)
+    // 1. Setup Timeout
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 360000); 
 
