@@ -11,6 +11,7 @@ import TickerTile from './TickerTile';
 import TradingViewWidget from './TradingViewWidget';
 import { TrendingUp, TrendingDown, DollarSign, Activity } from 'lucide-react';
 import Loading from './Loading';
+import PredictionChart from './PredictionChart';
 import styles from './Dashboard.module.css';
 
 export default function Dashboard() {
@@ -25,6 +26,11 @@ export default function Dashboard() {
         sentiment_confidence: 0,
         fundamental_analysis: '',
         technical_analysis: ''
+    });
+    const [predictions, setPredictions] = useState({
+        v1: [],
+        v2: [],
+        v3: []
     });
     const [news, setNews] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -74,6 +80,13 @@ export default function Dashboard() {
                 if (result.news) {
                     setNews(result.news);
                 }
+                if (result.past_predictions_v1) {
+                    setPredictions({
+                        v1: result.past_predictions_v1,
+                        v2: result.past_predictions_v2 || [],
+                        v3: result.past_predictions_v3 || []
+                    });
+                }
             } catch (err) {
                 console.error(err);
                 setError(err.message);
@@ -116,6 +129,13 @@ export default function Dashboard() {
         return <Loading />;
     }
 
+    const getGreeting = () => {
+        const hour = new Date().getHours();
+        if (hour < 12) return 'Good Morning !';
+        if (hour < 18) return 'Good Afternoon !';
+        return 'Good Evening !';
+    };
+
     return (
         <div className={styles.container}>
             <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} activeTab={activeTab} onTabChange={setActiveTab} />
@@ -123,7 +143,9 @@ export default function Dashboard() {
                 <Header toggleSidebar={toggleSidebar} />
                 <main className={styles.content}>
                     <div className={styles.pageHeader}>
-                        <h1 className={styles.title}>AMFSA Price Forecast</h1>
+                        <h1 className={styles.title}>
+                            {activeTab === 'Dashboard' ? getGreeting() : activeTab === 'Predictions' ? 'Previous Forecast' : 'AMFSA Price Forecast'}
+                        </h1>
                         <div className={styles.date}>
                             {new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                         </div>
@@ -173,6 +195,28 @@ export default function Dashboard() {
                                 <PriceChart data={chartData} loading={loading} error={error} />
                             </div>
                         </>
+                    )}
+
+                    {activeTab === 'Predictions' && (
+                        <div className={styles.grid}>
+                            <div style={{ gridColumn: '1 / -1', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+                                <PredictionChart
+                                    data={predictions.v1}
+                                    title="Prediction Model V1"
+                                    color="#0ea5e9"
+                                />
+                                <PredictionChart
+                                    data={predictions.v2}
+                                    title="Prediction Model V2"
+                                    color="#10b981"
+                                />
+                                <PredictionChart
+                                    data={predictions.v3}
+                                    title="Prediction Model V3"
+                                    color="#f59e0b"
+                                />
+                            </div>
+                        </div>
                     )}
 
                     {activeTab === 'Analytics' && (
