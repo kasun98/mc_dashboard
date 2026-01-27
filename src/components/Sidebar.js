@@ -1,11 +1,12 @@
 'use client';
 
-import { LayoutDashboard, BarChart3, PieChart, Settings, User, Bell, ChevronLeft, ChevronRight } from 'lucide-react';
+import { LayoutDashboard, BarChart3, TrendingUp, PieChart, Settings, User, Bell, ChevronLeft, ChevronRight } from 'lucide-react';
 import styles from './Sidebar.module.css';
 
 const menuItems = [
     { icon: LayoutDashboard, label: 'Dashboard', active: true },
     { icon: BarChart3, label: 'Analytics', active: false },
+    { icon: TrendingUp, label: 'Predictions', active: false },
     // { icon: PieChart, label: 'Portfolio', active: false },
     // { icon: Settings, label: 'Settings', active: false },
 ];
