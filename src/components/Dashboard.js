@@ -12,6 +12,7 @@ import TradingViewWidget from './TradingViewWidget';
 import { TrendingUp, TrendingDown, DollarSign, Activity } from 'lucide-react';
 import Loading from './Loading';
 import PredictionChart from './PredictionChart';
+import NextDayPredictionChart from './NextDayPredictionChart';
 import styles from './Dashboard.module.css';
 
 export default function Dashboard() {
@@ -200,19 +201,20 @@ export default function Dashboard() {
                     {activeTab === 'Predictions' && (
                         <div className={styles.grid}>
                             <div style={{ gridColumn: '1 / -1', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+                                <NextDayPredictionChart predictions={predictions} />
                                 <PredictionChart
                                     data={predictions.v1}
-                                    title="Prediction Model V1"
+                                    title="Prediction Model (10-day) V1"
                                     color="#0ea5e9"
                                 />
                                 <PredictionChart
                                     data={predictions.v2}
-                                    title="Prediction Model V2"
+                                    title="Prediction Model (10-day) V2"
                                     color="#10b981"
                                 />
                                 <PredictionChart
                                     data={predictions.v3}
-                                    title="Prediction Model V3"
+                                    title="Prediction Model (10-day) V3"
                                     color="#f59e0b"
                                 />
                             </div>

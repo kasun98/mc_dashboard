@@ -17,7 +17,7 @@ export async function GET() {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' },
             signal: controller.signal, 
-            next: { revalidate: 3600 } // Cache for 3600
+            next: { revalidate: 0 } // Cache for 3600
         });
 
         const duration = Date.now() - startTime;
