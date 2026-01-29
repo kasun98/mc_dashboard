@@ -36,7 +36,7 @@ const CustomTooltip = ({ active, payload, label }) => {
     return null;
 };
 
-export default function NextDayPredictionChart({ predictions = {} }) {
+export default function NextDayPredictionChart({ predictions = {}, description }) {
     const [selectedModel, setSelectedModel] = useState('v1');
 
     // Get the data array for the selected model
@@ -65,7 +65,10 @@ export default function NextDayPredictionChart({ predictions = {} }) {
     return (
         <div className={styles.wrapper}>
             <div className={styles.header}>
-                <h3 className={styles.title}>Next Day Prediction Accuracy ({selectedModel.toUpperCase()})</h3>
+                <div>
+                    <h3 className={styles.title}>Next Day Prediction Accuracy ({selectedModel.toUpperCase()})</h3>
+                    {description && <p className={styles.description}>{description}</p>}
+                </div>
                 <div className={styles.controls}>
                     <select
                         className={styles.dateSelect}

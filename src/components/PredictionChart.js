@@ -35,7 +35,7 @@ const CustomTooltip = ({ active, payload, label }) => {
     return null;
 };
 
-export default function PredictionChart({ data = [], title, color = '#8b5cf6' }) {
+export default function PredictionChart({ data = [], title, description, color = '#8b5cf6' }) {
     // Extract unique run dates for the filter
     const runDates = useMemo(() => {
         if (!data || data.length === 0) return [];
@@ -63,17 +63,23 @@ export default function PredictionChart({ data = [], title, color = '#8b5cf6' })
         return (
             <div className={styles.wrapper}>
                 <div className={styles.header}>
-                    <h3 className={styles.title}>{title}</h3>
+                    <div>
+                        <h3 className={styles.title}>{title}</h3>
+                        {description && <p className={styles.description}>{description}</p>}
+                    </div>
                 </div>
                 <div className={styles.noData}>No data available</div>
-            </div>
+            </div >
         );
     }
 
     return (
         <div className={styles.wrapper}>
             <div className={styles.header}>
-                <h3 className={styles.title}>{title}</h3>
+                <div>
+                    <h3 className={styles.title}>{title}</h3>
+                    {description && <p className={styles.description}>{description}</p>}
+                </div>
                 <div className={styles.controls}>
                     <select
                         className={styles.dateSelect}

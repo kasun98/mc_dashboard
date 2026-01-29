@@ -201,20 +201,26 @@ export default function Dashboard() {
                     {activeTab === 'Predictions' && (
                         <div className={styles.grid}>
                             <div style={{ gridColumn: '1 / -1', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-                                <NextDayPredictionChart predictions={predictions} />
+                                <NextDayPredictionChart
+                                    predictions={predictions}
+                                    description="This chart evaluates daily model precision by comparing actual closing prices against the specific next-day predictions (t+1) generated for each date. Use the dropdown to switch between model versions."
+                                />
                                 <PredictionChart
                                     data={predictions.v1}
                                     title="Prediction Model (10-day) V1"
+                                    description="A historical 'look-back' at Model V1’s forecasting performance. Select a past date to visualize the full 10-day predicted price path against the actual market movement that followed."
                                     color="#0ea5e9"
                                 />
                                 <PredictionChart
                                     data={predictions.v2}
                                     title="Prediction Model (10-day) V2"
+                                    description="Visualizes the 10-day trend trajectory predicted by Model V2. Choose a specific starting date from the filter to assess how accurately the model captured price direction and volatility over that window."
                                     color="#10b981"
                                 />
                                 <PredictionChart
                                     data={predictions.v3}
                                     title="Prediction Model (10-day) V3"
+                                    description="An analysis of Model V3’s long-range forecasting capabilities. This view plots the 10-day predicted sequence from your chosen date against actual realized prices to highlight trend-following accuracy."
                                     color="#f59e0b"
                                 />
                             </div>
