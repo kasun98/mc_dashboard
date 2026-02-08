@@ -6,7 +6,7 @@ export async function GET() {
 
     // 1. Setup Timeout
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 360000); 
+    const timeoutId = setTimeout(() => controller.abort(), 720000); 
 
     try {
         console.log(`Attempting to fetch from backend...`);
